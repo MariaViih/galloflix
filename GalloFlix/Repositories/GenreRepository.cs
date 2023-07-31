@@ -1,61 +1,83 @@
-Using GalloFlix.Interfaces;
-Using GalloFlix.models;
+using System.Data;
+using GalloFlix.Interfaces;
+using GalloFlix.Models;
 using MySql.Data.MySqlClient;
 
 namespace GalloFlix.Repositories;
+
+public class GenreRepository : IGenreRepository
 {
-    public class GenreRepository : IGenreRepository
+    readonly string connectionString = "server=localhost;port=3306;database=GalloFlixdb;uid=root;pwd=''";
+
+    public void Create(Genre model)
     {
-        string connectionString= "server=localhost;port=3306;database=galloflixdb;uid=root;pwb=''";
-
-        public void Creat(Genre model)
-
-         using (MySqlconnection connection= new(connectionString))
+        MySqlConnection connection = new(connectionString);
+        string sql = "insert into Genre(Name) values (@Name)";
+        MySqlCommand command = new(sql, connection)
         {
-            string sql= "insert into genre(name) values(@name)";
-            MySqlcommand command = new(sql, connection);
-            command.commandType = System.Data.CommandType.Text;
-            Command.Parameters.AddWithValue("@name",model.Name);
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.close();
-        }
-
+            CommandType = CommandType.Text
+        };
+        command.Parameters.AddWithValue("@Name", model.Name);
+        
+        connection.Open();
+        command.ExecuteNonQuery();
+        connection.Close();
     }
+
     public void Delete(int? id)
-     using (MySqlconnection = new(connectionString))
     {
-        var sql = "delete from genre where id = @id";
-        MySqlcommand command = new(sql, connection);
-        command.commandType = System.Data.CommandType.Text;
-         Command.Parameters.AddWithValue("@id",id);
-         connection.Open();
-         command.ExecuteNonQuery();
-         connection.close();
+        MySqlConnection connection = new(connectionString);
+        string sql = "delete from Genre where Id = @Id";
+        MySqlCommand command = new(sql, connection)
+        {
+            CommandType = CommandType.Text
+            };
+        command.Parameters.AddWithValue("@Id", id);
+        
+        connection.Open();
+        command.ExecuteNonQuery();
+        connection.Close();
     }
 
-    public List<Genre> ReadAll()
+     public List<Genre> ReadAll()
     {
-        List<Genre> genres = new();
-         using (MySqlConnection connection = new(connectionString))
-         {
-             var Sql = "Select * from genre";
-             MySqlCommand command = new(sql, connection);
-             command.commandType = System.Data.CommandType.Text;
-             connection.Open()
-             MySqlDataReader reader = command.ExecuteRender();
-             While (reader.Read())
-             {
-                 genres.Add(
-                     new Genre()
-                     {
-                         id = covert.ToByte(reader["id"]),
-                         Name = reader["name"].ToString()
-                     }
-                 );
-             }
-             connection.close();
-         }
+        MySqlConnection connection = new(connectionString);
+        string sql = "select * from Genre";
+        MySqlCommand command = new(sql, connection)
+        {
+            CommandType = CommandType.Text
+        };
+
+         List<Genre> genres = new();
+        connection.Open();
+        MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Genre genre = new()
+            {
+                Id = reader.GetByte("id"),
+                Name = reader.GetString("name")
+            };
+            genres.Add(genre);
+        }
+        connection.Close();
         return genres;
     }
-}
+
+    public Genre ReadById(int? id)
+    {
+        MySqlConnection connection = new(connectionString);
+        string sql = "select * from Genre where Id = @Id";
+        MySqlCommand command = new(sql, connection)
+        {
+            CommandType = CommandType.Text
+        };
+        command.Parameters.AddWithValue("@Id", id);
+        
+        connection.Open();
+        MySqlDataReader reader = command.ExecuteReader();
+        reader.Read();
+        if (reader.HasRows)
+        {
+
+
