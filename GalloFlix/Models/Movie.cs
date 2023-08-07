@@ -20,8 +20,8 @@ public class Movie
     [StringLength(8000)]
     public string Synopsis { get; set; }
 
-    [Required]
     [Column(TypeName = "Year")]
+    [Required]
     public Int16 MovieYear { get; set; }
 
     [Required]
@@ -35,6 +35,14 @@ public class Movie
 
     [NotMapped]
     public string HourDuration { get {
-        return TimeSpan.FromMinutes(Duration).ToString(@"%h'h'mm'min'");
+        return TimeSpan.FromMinutes(Duration).ToString(@"%h'h 'mm'min'");
     } }
+
+    [NotMapped]
+    public string Classification { get {
+        return AgeRating == 0 ? "Livre" : AgeRating + " anos";
+    } }
+
+    [NotMapped]
+    public List<Genre> Genres { get; set; }
 }

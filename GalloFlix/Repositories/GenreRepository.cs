@@ -31,7 +31,7 @@ public class GenreRepository : IGenreRepository
         MySqlCommand command = new(sql, connection)
         {
             CommandType = CommandType.Text
-            };
+        };
         command.Parameters.AddWithValue("@Id", id);
         
         connection.Open();
@@ -39,7 +39,7 @@ public class GenreRepository : IGenreRepository
         connection.Close();
     }
 
-     public List<Genre> ReadAll()
+    public List<Genre> ReadAll()
     {
         MySqlConnection connection = new(connectionString);
         string sql = "select * from Genre";
@@ -47,8 +47,8 @@ public class GenreRepository : IGenreRepository
         {
             CommandType = CommandType.Text
         };
-
-         List<Genre> genres = new();
+        
+        List<Genre> genres = new();
         connection.Open();
         MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -79,5 +79,31 @@ public class GenreRepository : IGenreRepository
         reader.Read();
         if (reader.HasRows)
         {
+            Genre genre = new()
+            {
+                Id = reader.GetByte("id"),
+                Name = reader.GetString("name")
+            };
+            connection.Close();
+            return genre;
+        }
+        connection.Close();
+        return null;
+    }
 
-
+    public void Update(Genre model)
+    {
+        MySqlConnection connection = new(connectionString);
+        string sql = "update Genre set Name = @Name where Id = @Id";
+        MySqlCommand command = new(sql, connection)
+        {
+            CommandType = CommandType.Text
+        };
+        command.Parameters.AddWithValue("@Id", model.Id);
+        command.Parameters.AddWithValue("@Name", model.Name);
+        
+        connection.Open();
+        command.ExecuteNonQuery();
+        connection.Close();
+    }
+}
