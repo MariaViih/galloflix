@@ -2,9 +2,17 @@ using GalloFlix.Models;
 
 namespace GalloFlix.Interfaces;
 
-public interface IMovieRepository : IRepository<Movie>
+public interface IMovieGenreRepository
 {
-    List<Movie> ReadAllDetailed();
+    void Create(int MovieId, byte GenreId);
 
-    Movie ReadByIdDetailed(int id);
+    void Delete(int MovieId, byte GenreId);
+
+    void Delete(int MovieId);
+
+    List<MovieGenre> ReadMovieGenre();
+
+    List<Movie> ReadMoviesByGenre(byte GenreId);
+
+    List<Genre> ReadGenresByMovie(int MovieId);
 }

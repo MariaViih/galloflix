@@ -1,14 +1,4 @@
-{
-        List<Movie> Movies = ReadAll();
-        foreach (Movie movie in Movies)
-        {
-            movie.Genres = _movieGenreRepository.ReadGenresByMovie(movie.Id);
-        }
-        return Movies;
-    }
-
-    public Movie ReadByIdDetailed(int id)
-    {using System.Data;
+using System.Data;
 using GalloFlix.Interfaces;
 using GalloFlix.Models;
 using MySql.Data.MySqlClient;
@@ -158,6 +148,17 @@ public class MovieRepository : IMovieRepository
     }
 
     public List<Movie> ReadAllDetailed()
+    {
+        List<Movie> Movies = ReadAll();
+        foreach (Movie movie in Movies)
+        {
+            movie.Genres = _movieGenreRepository.ReadGenresByMovie(movie.Id);
+        }
+        return Movies;
+    }
+
+    public Movie ReadByIdDetailed(int id)
+    {
         Movie movie = ReadById(id);
         movie.Genres = _movieGenreRepository.ReadGenresByMovie(movie.Id);
         return movie;

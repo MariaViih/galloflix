@@ -14,4 +14,3 @@ public interface IRepository<T> where T : class
 
     void Delete(int? id);
 }
-

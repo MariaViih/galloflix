@@ -8,3 +8,4 @@ public interface IMovieRepository : IRepository<Movie>
 
     Movie ReadByIdDetailed(int id);
 }
+
